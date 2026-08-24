@@ -1,0 +1,61 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Logs and runtime files
+*.log
+*.pid
+*.pid.lock
+*.sqlite3
+
+# Downloaded models and local service data
+models/
+hf_cache/
+cache/
+tmp/
+temp/
+uploads/
+outputs/
+
+# Local audio/test artifacts
+*.wav
+*.mp3
+*.m4a
+*.webm
+
+# Docker overrides and local tooling
+docker-compose.override.yml
+.docker/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

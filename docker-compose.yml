@@ -1,0 +1,19 @@
+services:
+  stt-service:
+    build: .
+    env_file: .env
+    ports:
+      - "127.0.0.1:8001:8001"
+    volumes:
+      - huggingface-cache:/models/huggingface
+    # For GPU deployments, use a CUDA-compatible Torch image and add device reservations.
+
+  # Main backend integration example:
+  # backend:
+  #   environment:
+  #     STT_SERVICE_URL: http://stt-service:8001
+  #   depends_on:
+  #     - stt-service
+
+volumes:
+  huggingface-cache:
