@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import asyncio
-import os
 import shutil
 import tempfile
 from dataclasses import dataclass
@@ -44,31 +42,12 @@ class AudioService:
                     output.write(chunk)
             if size == 0:
                 raise AudioValidationError("empty_audio_file", "Audio file is empty.")
-            transcription_path = source_path
-            if self.settings.normalize_audio:
-                transcription_path = await self._normalize(source_path, temp_dir)
-            return PreparedAudio(source_path, transcription_path, temp_dir)
+            return PreparedAudio(source_path, source_path, temp_dir)
         except Exception:
             self.cleanup(PreparedAudio(source_path, source_path, temp_dir))
             raise
         finally:
             await upload.close()
-
-    async def _normalize(self, source_path: Path, temp_dir: Path) -> Path:
-        output_path = temp_dir / "normalized.wav"
-        command = [
-            self.settings.ffmpeg_binary, "-y", "-i", str(source_path), "-ac", "1",
-            "-ar", str(self.settings.normalized_sample_rate), "-c:a", "pcm_s16le", str(output_path),
-        ]
-        try:
-            process = await asyncio.create_subprocess_exec(
-                *command, stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL
-            )
-            if await process.wait() != 0 or not output_path.exists():
-                raise AudioValidationError("audio_preprocessing_failed", "Audio could not be prepared.")
-        except FileNotFoundError as exc:
-            raise AudioValidationError("audio_preprocessing_failed", "Audio preprocessing is unavailable.") from exc
-        return output_path
 
     @staticmethod
     def cleanup(audio: PreparedAudio) -> None:

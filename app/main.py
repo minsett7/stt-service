@@ -13,6 +13,8 @@ from app.core.exceptions import AudioValidationError, RequestTimeoutError, Trans
 from app.core.logging import configure_logging
 from app.schemas.common import ErrorDetail, ErrorResponse
 from app.services.audio_service import AudioService
+from app.services.audio_preprocessing_service import AudioPreprocessingService
+from app.services.audio_quality_service import AudioQualityService
 from app.services.asr_service import ASRService
 from app.services.correction_service import CorrectionService
 from app.services.transcription_service import TranscriptionService
@@ -24,10 +26,11 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     configure_logging(settings.log_level)
     app.state.settings = settings
+    audio_preprocessor = AudioPreprocessingService(settings, AudioQualityService(settings))
     app.state.transcription_service = TranscriptionService(
-        AudioService(settings), ASRService(settings), CorrectionService(settings), TranscriptValidationService(settings)
+        AudioService(settings), ASRService(settings), CorrectionService(settings), TranscriptValidationService(settings), audio_preprocessor
     )
-    logging.getLogger(__name__).info("service_started name=%s", settings.app_name)
+    logging.getLogger(__name__).info("service_started name=%s ffmpeg_ready=%s", settings.app_name, audio_preprocessor.ffmpeg_ready)
     yield
 
 

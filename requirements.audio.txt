@@ -1,0 +1,4 @@
+# Lightweight deterministic microphone preprocessing.
+numpy>=1.26,<3.0
+scipy>=1.13,<2.0
+soundfile>=0.12,<1.0

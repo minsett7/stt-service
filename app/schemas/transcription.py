@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
+from app.schemas.audio import AudioProcessingTimings, AudioQualityResult
+
 
 class ASRResult(BaseModel):
     text: str
@@ -42,6 +44,8 @@ class TranscriptionData(BaseModel):
     corrections: list[CorrectionItem] = []
     warnings: list[str] = []
     processing_time_ms: int
+    audio_quality: AudioQualityResult | None = None
+    timings: AudioProcessingTimings | None = None
 
 
 class TranscriptionResponse(BaseModel):
@@ -55,3 +59,6 @@ class HealthResponse(BaseModel):
     version: str
     asr_ready: bool
     correction_provider: str | None
+    audio_preprocessing_ready: bool
+    ffmpeg_ready: bool
+    vad_ready: bool

@@ -29,6 +29,7 @@ pip-wheel-metadata/
 
 # Logs and runtime files
 *.log
+debug-audio/
 *.pid
 *.pid.lock
 *.sqlite3

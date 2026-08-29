@@ -34,7 +34,7 @@ class FakeProvider:
 
 @pytest.fixture
 def settings():
-    return Settings(normalize_audio=False, correction_enabled=True)
+    return Settings(normalize_audio=False, audio_preprocessing_enabled=False, correction_enabled=True)
 
 
 @pytest.fixture

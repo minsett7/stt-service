@@ -6,6 +6,9 @@ services:
       - "127.0.0.1:8001:8001"
     volumes:
       - huggingface-cache:/models/huggingface
+      # Local-development only: uncomment with AUDIO_DEBUG_SAVE_INTERMEDIATE=true.
+      # Customer audio will be written to ./debug-audio on the host.
+      # - ./debug-audio:/app/debug-audio
     # For GPU deployments, use a CUDA-compatible Torch image and add device reservations.
 
   # Main backend integration example:

@@ -22,6 +22,30 @@ class Settings(BaseSettings):
     normalize_audio: bool = True
     ffmpeg_binary: str = "ffmpeg"
     normalized_sample_rate: int = Field(default=16000, ge=8000)
+    audio_preprocessing_enabled: bool = True
+    audio_target_sample_rate: int = Field(default=16000, ge=8000)
+    audio_target_channels: int = Field(default=1, ge=1, le=2)
+    audio_max_duration_seconds: float = Field(default=30, gt=0)
+    audio_dc_offset_removal_enabled: bool = True
+    audio_high_pass_enabled: bool = True
+    audio_high_pass_hz: float = Field(default=80, ge=70, le=100)
+    audio_noise_suppression_enabled: bool = True
+    audio_noise_suppression_provider: str = "ffmpeg_afftdn"
+    audio_normalization_enabled: bool = True
+    audio_target_peak_dbfs: float = Field(default=-3, ge=-12, le=-1)
+    audio_max_gain_db: float = Field(default=12, ge=0, le=24)
+    vad_enabled: bool = True
+    vad_min_speech_ms: int = Field(default=300, ge=100)
+    vad_speech_pad_ms: int = Field(default=250, ge=0, le=1000)
+    vad_frame_ms: int = Field(default=30, ge=10, le=100)
+    vad_speech_threshold_dbfs: float = Field(default=-42, ge=-70, le=-10)
+    audio_low_volume_rms_dbfs: float = Field(default=-45, ge=-80, le=-10)
+    audio_extremely_low_volume_rms_dbfs: float = Field(default=-60, ge=-90, le=-20)
+    audio_clipping_threshold: float = Field(default=0.99, gt=0.8, lt=1)
+    audio_max_clipping_ratio: float = Field(default=0.02, ge=0, le=1)
+    audio_min_speech_ratio: float = Field(default=0.05, ge=0, le=1)
+    audio_debug_save_intermediate: bool = False
+    audio_debug_directory: str = "debug-audio"
 
     asr_model: str = "chuuhtetnaing/whisper-large-v3-myanmar"
     asr_device: str = "auto"

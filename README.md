@@ -8,6 +8,22 @@ An internal FastAPI microservice that converts uploaded audio into a trustworthy
 
 The ASR model is `chuuhtetnaing/whisper-large-v3-myanmar`. Gemini is optional: if it is unavailable, the raw ASR transcript is returned successfully. Protected numeric values are compared deterministically, and corrections that change them or rewrite too much are rejected.
 
+## Microphone preprocessing
+
+Before Whisper, enabled uploads follow: canonical FFmpeg decode (16 kHz mono PCM WAV) → DC offset removal → 80 Hz high-pass filter → optional light FFmpeg `afftdn` noise suppression → capped peak normalization (-3 dBFS, 12 dB maximum gain) → deterministic energy VAD with 250 ms padding → quality gate. All stages are configurable in `.env`; `AUDIO_PREPROCESSING_ENABLED=false` preserves the original upload-to-ASR path for comparisons.
+
+`requirements.audio.txt` contains the three lightweight signal-processing dependencies (`numpy`, `scipy`, and `soundfile`) separately from the ASR requirements, so Docker can keep its existing Torch/Transformers installation layer cached.
+
+The quality gate rejects no speech, severe clipping (more than 2% of samples at/above 0.99 full scale), and extremely low-volume audio. Moderate low volume, clipping, or excessive silence continue with warnings. Preprocessing is not a replacement for a banking terminology prompt or model improvement.
+
+Compare the same real microphone recording across profiles without invoking Whisper:
+
+```bash
+python scripts/benchmark_audio_preprocessing.py sample.webm
+```
+
+It reports `resample_only`, `resample_vad`, `resample_vad_denoise`, and `full` metrics and timings. To listen to intermediate WAVs during local development, set `AUDIO_DEBUG_SAVE_INTERMEDIATE=true` and optionally change `AUDIO_DEBUG_DIRECTORY`. With Docker, also uncomment the `./debug-audio:/app/debug-audio` bind mount in Compose. These recordings contain customer audio; keep this disabled in production and delete the debug directory after testing.
+
 ## Layout
 
 ```text
